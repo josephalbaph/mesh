@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CS4406 Computer Graphics - Assignment #2" />
+    <title> CS4406 Computer Graphics - ProgrammingAsignment U#2 </title>
+    <style>
+        #container {
+            background: #000000;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/94/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.1/math.min.js"></script>
+</head>
+
+<body>
+    <div id="container"></div>
+</body>
+
+</html>
+
+<script>
+    // set the scene size
+    let WIDTH = 600,
+        HEIGHT = 600;
+    // set some camera attributes
+    let VIEW_ANGLE = 45,
+        ASPECT = WIDTH / HEIGHT,
+        NEAR = 1,
+        FAR = 1000;
+    // get the element to attach
+    let $container = $('#container');
+    // create a WebGL renderer, camera, and a scene
+    let renderer = new THREE.WebGLRenderer();
+    let scene = new THREE.Scene();
+    let clock = new THREE.Clock();
+    let camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+    // the camera starts at 0,0,0 so pull it back
+    camera.position.z = 30;
+    // add the camera to the scene
+    scene.add(camera);
+
+    // set up the camera controls.  Please keep in mind that what this does is move the entire scene around.
+    // because the entire scene is moving the position of the camera and lights in relation to objects within 
+    // the scene doesn't change so the lighting on the surface of the object(s) will not change either
+
+    // let cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+    // cameraControls.addEventListener('mousemove', renderer);
+
+    // start the renderer*
+    renderer.setSize(WIDTH, HEIGHT);
+
+    // attach the render-supplied DOM element
+    $container.append(renderer.domElement);
+
+    // ----------------------------------------------------------------------------------------
+    //  END OF THE STANDARD CODE FOR THE ASSIGNMENT
+    // ----------------------------------------------------------------------------------------
+
+    // create material
+    // To create color red the hex value is 0XFF0000
+    // for Blue color the hex value is 0X0000FF
+    // Note that changing the mesh clolor will require to make sure that the ambient light 
+    // contains red or blue otherwise the mesh is invisible
+    let material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        side: THREE.DoubleSide,
+        wireframe: false
+    });
+
+    let geometry = new THREE.Geometry();
+    // create 5 vertices
+    geometry.vertices.push(new THREE.Vector3(3, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 5, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 2));
+    geometry.vertices.push(new THREE.Vector3(1, 2, -2));
+    geometry.vertices.push(new THREE.Vector3(-1, -2, 0));
+
+    // create a polygon from the 5 vertices.
+    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    geometry.faces.push(new THREE.Face3(1, 2, 3));
+    geometry.faces.push(new THREE.Face3(2, 3, 4));
+    geometry.faces.push(new THREE.Face3(4, 0, 1));
+
+    // create Mesh object
+    let shape = new THREE.Mesh(geometry, material);
+    scene.add(shape);
+
+    // create a point light
+    let areaLight = new THREE.RectAreaLight(0xffffff, 1);
+    scene.add(areaLight);
+
+    // ----------------------------------------------------------------------------------------
+    // END OF YOUR CUSTOM CODE FOR THE ASSIGNMENT
+    // The rendering functions that follow are standard and can be used for this assignment.  
+    // You are welcome to customize them or create your own if you desire, however, you can 
+    // simply use the code provided.
+
+
+    // Standard functions for rendering the scene.  Notice how we have the animate function 
+    // which submits a call to requestAnimationFrame to call animate.   This creates a loop
+    // that will render the scene again whenever something within the scene changes.
+    // Standard functions for rendering the scene.  Notice how we have the animate function 
+    // which submits a call to requestAnimationFrame to call animate.   This creates a loop
+    // that will render the scene again whenever something within the scene changes.
+
+    function animate() {
+        requestAnimationFrame(animate);
+        let ADD = 0.01;
+        // rotate shape on x and y axis
+        shape.rotation.y += ADD;
+        shape.rotation.x += ADD;
+
+        render()
+    };
+
+    function render() {
+        //        cameraControls.update();
+        renderer.render(scene, camera);
+    }
+
+
+    animate();
+</script>
